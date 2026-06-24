@@ -2,8 +2,13 @@ pipeline {
     agent any
     
     tools {
-        maven 'mvn-3912'      // ← Use the exact name shown in error
-        jdk 'jdk-25'          // ← Use the exact name shown in error
+        maven 'mvn-3912'
+        jdk 'jdk-25'
+    }
+
+    environment {
+        JAVA_HOME = "${tool 'jdk-25'}"
+        PATH = "${JAVA_HOME}/bin:${env.PATH}"
     }
 
     stages {
@@ -17,7 +22,7 @@ pipeline {
             steps {
                 echo 'Building Java application...'
                 dir('java-app') {
-                    sh 'mvn clean compile'
+                    sh 'mvn clean compile --no-transfer-progress'
                 }
             }
         }
@@ -26,7 +31,7 @@ pipeline {
             steps {
                 echo 'Running tests...'
                 dir('java-app') {
-                    sh 'mvn test'
+                    sh 'mvn test --no-transfer-progress'
                 }
             }
         }
@@ -35,7 +40,7 @@ pipeline {
             steps {
                 echo 'Creating executable JAR...'
                 dir('java-app') {
-                    sh 'mvn package'
+                    sh 'mvn package --no-transfer-progress'
                 }
                 archiveArtifacts artifacts: 'java-app/target/*.jar', fingerprint: true
             }
