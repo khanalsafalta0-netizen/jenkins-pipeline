@@ -2,8 +2,8 @@ pipeline {
     agent any
     
     tools {
-        maven 'Maven'           // Make sure this tool is configured in Jenkins
-        jdk 'JDK'               // Optional but recommended
+        maven 'mvn-3912'      // ← Use the exact name shown in error
+        jdk 'jdk-25'          // ← Use the exact name shown in error
     }
 
     stages {
@@ -16,7 +16,7 @@ pipeline {
         stage('Build') {
             steps {
                 echo 'Building Java application...'
-                dir('java-app') {          // ← important: go into the java-app folder
+                dir('java-app') {
                     sh 'mvn clean compile'
                 }
             }
@@ -45,22 +45,15 @@ pipeline {
             steps {
                 echo 'Running the Java application...'
                 dir('java-app') {
-                    sh 'java -jar target/application-2.0-SNAPSHOT.jar'   // adjust version if needed
+                    sh 'java -jar target/application-2.0-SNAPSHOT.jar'
                 }
-            }
-        }
-        
-        stage('Deploy') {
-            steps {
-                echo 'Deploy stage - add your deployment logic here'
-                // e.g., copy jar to server, deploy to Tomcat, Kubernetes, etc.
             }
         }
     }
     
     post {
         success {
-            echo 'Pipeline completed successfully!'
+            echo 'Pipeline completed successfully! 🎉'
         }
         failure {
             echo 'Pipeline failed!'
