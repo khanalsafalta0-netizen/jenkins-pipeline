@@ -1,15 +1,12 @@
 pipeline {
-    agent any
+    agent { label 'slave_agent' } // Specifying your target agent node
     
     tools {
         maven 'mvn-3912'
         jdk 'jdk-25'
     }
 
-    environment {
-        JAVA_HOME = "${tool 'jdk-25'}"
-        PATH = "${JAVA_HOME}/bin:${env.PATH}"
-    }
+    // Removed the manual environment overrides as Jenkins tools handles it automatically!
 
     stages {
         stage('Checkout') {
@@ -50,6 +47,7 @@ pipeline {
             steps {
                 echo 'Running the Java application...'
                 dir('java-app') {
+                    // Tip: Double-check that your generated jar name matches exactly in target/
                     sh 'java -jar target/application-2.0-SNAPSHOT.jar'
                 }
             }
